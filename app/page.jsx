@@ -1,7 +1,6 @@
 import ChristmasApp from '../components/ChristmasApp';
+import Screen from '../components/screens/IntroScreen';
 
-export const dynamic = 'force-dynamic';
-
-export default function Home() {
-  return <ChristmasApp />;
+export default function Page() {
+  return <ChristmasApp initialPage="intro" Screen={Screen} />;
 }

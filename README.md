@@ -41,10 +41,11 @@ npm run dev
 
 ```text
 app/                 Next.js App Router 화면과 API
-  [screen]/          서비스 화면 라우트
+  login/, home/ 등   화면별 라우트
   stockings/[id]/    공유 양말 화면
   api/service/       공개 서비스 정보 API
 components/          화면과 재사용 UI
+  screens/           화면별 컴포넌트
 lib/                 화면 경로와 서비스 설정
 ```
 

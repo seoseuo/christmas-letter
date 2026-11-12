@@ -1,0 +1,5 @@
+'use client';
+
+export default function HomeScreen({ art, go, price, agree, setAgree, loginTarget, back, name, setName, opts, setOpts, colors, setModal, title, origin, stockingId, copy, flash, share, letterCount, saved, writer, setWriter, papers, paper, setPaper, message, setMessage, busy, setBusy, product, reason, setReason, Sock, Button }) {
+ return (<div className="content centered"><div className="eyebrow">MY CHRISTMAS STOCKING</div><h2>{title}의<br/>크리스마스 양말</h2><div className="home-art">{art}<div className="home-trees">🎄　　　　　　 🎄</div></div><div className="letter-count">✉️　받은 편지 <strong>{letterCount}</strong>통</div><div className="countdown">🎄　2026.12.25 00:00 KST에 만나요</div><div className="button-row"><Button secondary onClick={share}>↗ 공유하기</Button><Button onClick={()=>go('letters')}>내 편지 확인 →</Button></div>{letterCount===0&&<div className="empty"><span>✉</span><b>아직 도착한 편지가 없어요</b><p>친구들에게 양말을 공유하고<br/>첫 번째 마음을 기다려보세요.</p></div>}</div>);
+}
