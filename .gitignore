@@ -8,6 +8,8 @@ out/
 .env.*
 !.env.example
 *.pem
+*.crt
+*.cer
 *.key
 *.p12
 *.pfx
