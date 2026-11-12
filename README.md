@@ -73,6 +73,6 @@ Made with 💛 by **andflow studio** · [@andflow.studio](https://instagram.com/
 
 ### 편지 열람·신고와 탈퇴 준비
 
-기존 DB에 `supabase/migrations/20261113_letter_access.sql`을 실행한 다음 `supabase/20261113_all_or_nothing.sql`을 실행하세요. 기존 개별 편지 열람권이 있으면 변경이 중단되며 별도 검토가 필요합니다. 열람권은 결제 승인 연동 전까지 자동 발급되지 않으므로 현재 편지를 열 수 없습니다. 결제 승인 검증 없이 DB에 직접 열람권을 추가하지 마세요.
+기존 DB에 `db/20261113_letter_access.sql`을 실행한 다음 `db/20261113_all_or_nothing.sql`을 실행하세요. 기존 개별 편지 열람권이 있으면 변경이 중단되며 별도 검토가 필요합니다. 열람권은 결제 승인 연동 전까지 자동 발급되지 않으므로 현재 편지를 열 수 없습니다. 결제 승인 검증 없이 DB에 직접 열람권을 추가하지 마세요.
 
 회원 탈퇴에 카카오 연결 해제용 `KAKAO_ADMIN_KEY`가 필요합니다. 로컬 `.env.local`과 Render Environment에 직접 설정하고 공개하지 마세요. 탈퇴 시 본인의 양말·받은 편지와 작성한 편지가 삭제됩니다. 카카오에서 직접 연결을 해제한 경우 처리할 웹훅과 데이터 보관·파기 정책은 출시 전 별도 구현이 필요합니다.
