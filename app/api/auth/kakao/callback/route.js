@@ -5,8 +5,9 @@ import { cookieOptions, hash, randomToken } from '../../../../../lib/server/auth
 
 export async function GET(request) {
   const url = new URL(request.url);
+  const publicOrigin = process.env.KAKAO_REDIRECT_URI ? new URL(process.env.KAKAO_REDIRECT_URI).origin : url.origin;
   const jar = await cookies();
-  const fail = () => NextResponse.redirect(new URL('/login?error=auth', url.origin));
+  const fail = () => NextResponse.redirect(new URL('/login?error=auth', publicOrigin));
   if (!url.searchParams.get('code') || !url.searchParams.get('state') || url.searchParams.get('state') !== jar.get('oauth_state')?.value) return fail();
   try {
     const params = new URLSearchParams({ grant_type: 'authorization_code', client_id: process.env.KAKAO_REST_API_KEY, redirect_uri: process.env.KAKAO_REDIRECT_URI, code: url.searchParams.get('code') });
@@ -22,7 +23,7 @@ export async function GET(request) {
     const session = randomToken();
     await db().query("insert into public.sessions (token_hash, member_id, expires_at) values ($1,$2,now() + interval '7 days')", [hash(session), member.rows[0].id]);
     const target = jar.get('oauth_next')?.value === 'write' ? '/write' : '/home';
-    const response = NextResponse.redirect(new URL(target, url.origin));
+    const response = NextResponse.redirect(new URL(target, publicOrigin));
     response.cookies.set('christmas_session', session, { ...cookieOptions, maxAge: 604800 });
     response.cookies.delete('oauth_state'); response.cookies.delete('oauth_next');
     return response;
