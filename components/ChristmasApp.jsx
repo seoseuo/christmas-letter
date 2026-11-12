@@ -12,6 +12,7 @@ export default function ChristmasApp({ initialPage = 'intro' }){
  const [loginTarget,setLoginTarget]=useState(''); const [stockingId,setStockingId]=useState(''); const [letterCount,setLetterCount]=useState(0); const [busy,setBusy]=useState(false);
  React.useEffect(()=>{
   setOrigin(window.location.origin);
+  if(initialPage==='login' && new URLSearchParams(window.location.search).get('error')==='auth') flash('로그인에 실패했어요. 서버 로그를 확인해 주세요.');
   try {
    const data=JSON.parse(sessionStorage.getItem('christmas-preview') || '{}');
    if(typeof data.name==='string')setName(data.name);
