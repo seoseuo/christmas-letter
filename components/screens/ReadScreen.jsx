@@ -1,5 +1,7 @@
 'use client';
-
-export default function ReadScreen({ art, go, price, agree, setAgree, loginTarget, back, name, setName, opts, setOpts, colors, setModal, title, origin, stockingId, copy, flash, share, letterCount, saved, writer, setWriter, papers, paper, setPaper, message, setMessage, busy, setBusy, product, reason, setReason, Sock, Button }) {
- return (<div className="content"><div className="page-heading"><div className="eyebrow">LETTER PREVIEW</div><h2>편지 읽기 ✉️</h2><p>예시로 작성된 편지입니다.</p></div><div className="guide-card"><b>보낸 사람　겨울별 ⭐</b><p><br/>안녕!<br/><br/>올해도 정말 수고 많았어.<br/>다가오는 크리스마스에는 마음이 따뜻해지는 시간이 되길 바라.<br/><br/>메리 크리스마스! 🎄</p></div><div className="button-row"><Button secondary onClick={()=>go('letters')}>목록으로</Button><Button secondary onClick={()=>go('report')}>신고 화면 보기</Button></div></div>);
+import { useEffect, useState } from 'react';
+export default function ReadScreen({go,Button}) {
+ const [letter,setLetter]=useState(null);const [message,setMessage]=useState('편지를 불러오고 있어요.');
+ useEffect(()=>{const id=new URLSearchParams(location.search).get('id');if(!id){setMessage('읽을 편지를 선택해 주세요.');return}fetch('/api/letters/'+encodeURIComponent(id)).then(async r=>{const data=await r.json();if(!r.ok)throw new Error(data.error);setLetter(data.letter)}).catch(e=>setMessage(e.message));},[]);
+ return <div className="content"><div className="page-heading"><h2>편지 읽기 ✉️</h2></div>{letter?<><div className="guide-card"><b>보낸 사람　{letter.writer}</b><p style={{whiteSpace:'pre-wrap'}}>{'\n'+letter.body}</p></div><Button secondary onClick={()=>location.assign('/report?id='+encodeURIComponent(letter.id))}>신고하기</Button></>:<div className="info">{message}</div>}<Button secondary onClick={()=>go('letters')}>목록으로</Button></div>;
 }
