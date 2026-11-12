@@ -12,16 +12,19 @@ export async function GET(request) {
     return NextResponse.redirect(new URL('/login?error=auth', publicOrigin));
   };
   if (!url.searchParams.get('code') || !url.searchParams.get('state') || url.searchParams.get('state') !== jar.get('oauth_state')?.value) return fail('authorization_or_state');
+  let stage = 'token';
   try {
     const params = new URLSearchParams({ grant_type: 'authorization_code', client_id: process.env.KAKAO_REST_API_KEY, redirect_uri: process.env.KAKAO_REDIRECT_URI, code: url.searchParams.get('code') });
     if (process.env.KAKAO_CLIENT_SECRET) params.set('client_secret', process.env.KAKAO_CLIENT_SECRET);
     const tokenResponse = await fetch('https://kauth.kakao.com/oauth/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }, body: params, cache: 'no-store' });
     if (!tokenResponse.ok) return fail(`token_http_${tokenResponse.status}`);
     const token = await tokenResponse.json();
+    stage = 'user';
     const userResponse = await fetch('https://kapi.kakao.com/v2/user/me', { headers: { Authorization: `Bearer ${token.access_token}` }, cache: 'no-store' });
     if (!userResponse.ok) return fail(`user_http_${userResponse.status}`);
     const user = await userResponse.json();
     if (!user.id) return fail('missing_user_id');
+    stage = 'database';
     const member = await db().query('insert into public.members (kakao_id) values ($1) on conflict (kakao_id) do update set kakao_id=excluded.kakao_id returning id', [String(user.id)]);
     const session = randomToken();
     await db().query("insert into public.sessions (token_hash, member_id, expires_at) values ($1,$2,now() + interval '7 days')", [hash(session), member.rows[0].id]);
@@ -32,6 +35,6 @@ export async function GET(request) {
     return response;
   } catch (error) {
     console.error('[kakao-login] server error code:', typeof error?.code === 'string' ? error.code : 'unknown');
-    return fail('server_or_database');
+    return fail(stage);
   }
 }
