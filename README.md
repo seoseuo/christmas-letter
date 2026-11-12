@@ -22,9 +22,9 @@
 
 ## 🚧 지금은 화면 시연 중이에요
 
-현재는 서비스 흐름을 살펴볼 수 있는 프로토타입입니다. 화면을 이동하며 양말을 꾸미고 편지 작성 화면을 둘러볼 수 있지만, 시연 데이터는 브라우저 세션에만 남아요. `/stockings/demo`는 예시 공유 주소입니다.
+현재는 개발 중인 프로토타입입니다. 카카오와 Supabase를 설정하면 양말과 편지를 DB에 저장하고 양말별 링크를 공유할 수 있도록 준비되어 있습니다. 설정 전에는 실제 로그인이 동작하지 않습니다.
 
-카카오 로그인, 데이터베이스, 실제 양말·편지 저장 및 공유, 이미지 저장, 결제, 편지 열람 권한과 신고 처리는 아직 연결되지 않았어요. 🔨
+카카오 로그인과 양말·편지 저장은 Supabase 및 카카오 설정이 필요하며 실제 환경에서 검증해야 합니다. 이미지 저장, 결제, 편지 열람과 신고 처리는 아직 준비 중이에요. 🔨
 
 ## 🚀 시작하기
 
@@ -53,3 +53,13 @@ Next.js Route Handler를 통해 같은 프로젝트에서 API를 만들 수 있�
 ---
 
 Made with 💛 by **andflow studio** · [@andflow.studio](https://instagram.com/andflow.studio)
+
+## 🔐 Supabase와 카카오 설정
+
+1. Supabase 프로젝트의 **SQL Editor**에서 `db/schema.sql`을 실행해 테이블을 만듭니다. 기존 운영 데이터가 있는 프로젝트라면 먼저 SQL을 검토하세요.
+2. Supabase의 **Connect → Session pooler**에서 연결 문자열을 복사하고 DB 비밀번호를 채웁니다. 이 문자열은 비밀정보이므로 채팅이나 저장소에 올리지 마세요.
+3. 프로젝트 루트에 `.env.local` 파일을 만들고 `.env.example`의 항목을 채웁니다. `DATABASE_URL`에는 위 연결 문자열을 넣습니다.
+4. 카카오 개발자 설정에서 REST API 키와 (활성화한 경우) Client Secret을 각각 `KAKAO_REST_API_KEY`, `KAKAO_CLIENT_SECRET`에 입력합니다. `KAKAO_REDIRECT_URI`는 카카오에 등록한 콜백 주소와 정확히 일치해야 합니다. 로컬 예시는 `http://localhost:3000/api/auth/kakao/callback`입니다.
+5. Render 서비스의 **Environment**에도 같은 변수들을 직접 추가합니다. 배포 환경의 `KAKAO_REDIRECT_URI`는 `https://배포도메인/api/auth/kakao/callback`으로 설정하고, 카카오 개발자 설정에도 등록하세요.
+
+`.env.local`은 Git에서 제외됩니다. 아직 DB 스키마와 외부 계정을 연결하지 않은 환경에서는 실제 로그인 및 저장을 검증할 수 없습니다.
