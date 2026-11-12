@@ -32,7 +32,7 @@ export default function ChristmasApp({ initialPage = 'intro', Screen }){
  },[initialPage]);
  const go=(p, overrides={})=>{
   try { sessionStorage.setItem('christmas-preview',JSON.stringify({name,saved,opts,paper,writer,message,product,loginTarget,stockingId,...overrides})); } catch {}
-  window.location.assign(screenPaths[p] || '/');
+  window.location.assign(p === 'visit' && stockingId ? '/stockings/' + encodeURIComponent(stockingId) : (screenPaths[p] || '/'));
  };
  const back=()=>{if(window.history.length>1)window.history.back();else go(initialPage==='visit'?'intro':'home')};
  const flash=(t)=>{setToast(t);setTimeout(()=>setToast(''),2600)}; const copy=async()=>{try{await navigator.clipboard.writeText(location.origin+'/stockings/'+stockingId);flash('공유 링크를 복사했어요!')}catch{flash('주소창의 링크를 복사해 주세요.')}}; const title=name||'소중한 친구'; const art=<Sock color={opts[0]} cord={opts[1]} ribbon={opts[2]} bell={opts[3]}/>; const nav=['home','decorate','letters','guide'].includes(page)||['complete','checkout','paid','read','report'].includes(page);
