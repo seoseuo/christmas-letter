@@ -9,8 +9,8 @@ export default function ReadScreen({ go, Button }) {
   const [message, setMessage] = useState('편지를 불러오고 있어요.');
   const [showSupport, setShowSupport] = useState(false);
   const [copyStatus, setCopyStatus] = useState('');
-  const supportAccount = process.env.NEXT_PUBLIC_SUPPORT_ACCOUNT || '';
-  const kbSupportAccount = process.env.NEXT_PUBLIC_KB_SUPPORT_ACCOUNT || '';
+  const supportAccount = '1002566851486';
+  const kbSupportAccount = '272701-04-308650';
 
   async function copyAccount(account, bank) {
     try {
