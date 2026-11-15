@@ -44,9 +44,6 @@ export default function ReadScreen({ go, Button }) {
           <div className="letter-paper-content">
             <b>보낸 사람　{letter.writer}</b>
             <p>{letter.body}</p>
-            <div className="letter-report-row">
-              <button className="letter-report" onClick={() => window.location.assign('/report?id=' + encodeURIComponent(letter.id))}>편지 신고하기</button>
-            </div>
           </div>
         </article>
         {index !== -1 && <div className="letter-navigation" aria-label="편지 이동">
@@ -56,6 +53,9 @@ export default function ReadScreen({ go, Button }) {
         </div>}
       </> : <div className="info" role="status">{message}</div>}
       <Button secondary onClick={() => go('letters')}>목록으로</Button>
+      {letter && <div className="letter-report-row">
+        <button className="letter-report" onClick={() => window.location.assign('/report?id=' + encodeURIComponent(letter.id))}>편지 신고하기</button>
+      </div>}
     </div>
   );
 }
