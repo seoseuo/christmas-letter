@@ -11,7 +11,7 @@ export default function LoginScreen({ go, loginTarget, back, Button }) {
       <Button onClick={() => window.location.assign('/api/auth/kakao?next=' + (loginTarget === 'write' ? 'write' : 'home'))}>
         ●　카카오로 시작하기
       </Button>
-      <button className="text-link" onClick={() => go('guide')}>서비스 및 유료 이용 안내</button>
+      <button className="text-link" onClick={() => go('guide')}>서비스 이용 안내</button>
       <button className="text-link" onClick={back}>‹ 이전으로</button>
     </div>
   );
