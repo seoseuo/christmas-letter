@@ -24,6 +24,7 @@ export default function LoginScreen({ go, loginTarget, Button, testLoginEnabled 
       <Button onClick={() => window.location.assign('/api/auth/kakao?next=' + (loginTarget === 'write' ? 'write' : 'home'))}>
         ●　카카오로 시작하기
       </Button>
+      <p className="login-legal">시작하기 전에 <a href="/terms">이용약관</a> 및 <a href="/privacy">개인정보 처리방침</a>을 확인해 주세요.</p>
       {testLoginEnabled && <Button secondary disabled={busy} onClick={testLogin}>테스트 로그인 (로컬 전용)</Button>}
       {error && <div className="warning" role="alert">{error}</div>}
       <button className="text-link" onClick={() => go('guide')}>서비스 이용 안내</button>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 
 import Sock from './stocking/Sock';
+import Footer from './Footer';
 import { colors, papers, price } from '../lib/service-config';
 import { screenPaths } from '../lib/routes';
 
@@ -54,5 +55,5 @@ export default function ChristmasApp({ initialPage = 'intro', Screen, testLoginE
 
 
 
- </main><footer>© andflow studio</footer></div>{modal&&<div className="overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div className="modal"><div className="big-icon">🧦</div><h2 id="modal-title">이 양말로 결정할까요?</h2><p>한 번 완성한 양말은<br/>다시 수정할 수 없어요.</p><Button onClick={async()=>{setBusy(true);try{const r=await fetch('/api/stockings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nickname:name,options:opts})});const data=await r.json();if(!r.ok)throw new Error(data.error);setModal('');go('complete',{saved:true,stockingId:data.stocking.id})}catch(e){flash(e.message||'저장하지 못했어요.')}finally{setBusy(false)}}} disabled={busy}>네, 완성할게요!</Button><Button secondary onClick={()=>setModal('')}>조금 더 꾸밀래요</Button></div></div>}{toast&&<div className="toast" role="status">{toast}</div>}</div>
+ </main><Footer /></div>{modal&&<div className="overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div className="modal"><div className="big-icon">🧦</div><h2 id="modal-title">이 양말로 결정할까요?</h2><p>한 번 완성한 양말은<br/>다시 수정할 수 없어요.</p><Button onClick={async()=>{setBusy(true);try{const r=await fetch('/api/stockings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nickname:name,options:opts})});const data=await r.json();if(!r.ok)throw new Error(data.error);setModal('');go('complete',{saved:true,stockingId:data.stocking.id})}catch(e){flash(e.message||'저장하지 못했어요.')}finally{setBusy(false)}}} disabled={busy}>네, 완성할게요!</Button><Button secondary onClick={()=>setModal('')}>조금 더 꾸밀래요</Button></div></div>}{toast&&<div className="toast" role="status">{toast}</div>}</div>
 }
