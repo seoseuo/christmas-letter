@@ -12,7 +12,6 @@ export default function LoginScreen({ go, loginTarget, back, Button }) {
         ●　카카오로 시작하기
       </Button>
       <button className="text-link" onClick={() => go('guide')}>서비스 이용 안내</button>
-      <button className="text-link" onClick={back}>‹ 이전으로</button>
     </div>
   );
 }
