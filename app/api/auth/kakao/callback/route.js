@@ -13,6 +13,7 @@ export async function GET(request) {
   };
   if (!url.searchParams.get('code') || !url.searchParams.get('state') || url.searchParams.get('state') !== jar.get('oauth_state')?.value) return fail('authorization_or_state');
   let stage = 'token';
+  const startedAt = Date.now();
   try {
     const params = new URLSearchParams({ grant_type: 'authorization_code', client_id: process.env.KAKAO_REST_API_KEY, redirect_uri: process.env.KAKAO_REDIRECT_URI, code: url.searchParams.get('code') });
     if (process.env.KAKAO_CLIENT_SECRET) params.set('client_secret', process.env.KAKAO_CLIENT_SECRET);
@@ -24,17 +25,27 @@ export async function GET(request) {
     if (!userResponse.ok) return fail(`user_http_${userResponse.status}`);
     const user = await userResponse.json();
     if (!user.id) return fail('missing_user_id');
-    stage = 'database';
-    const member = await db().query('insert into public.members (kakao_id) values ($1) on conflict (kakao_id) do update set kakao_id=excluded.kakao_id returning id', [String(user.id)]);
+    stage = 'database_init';
+    const database = db();
+    stage = 'database_member';
+    const member = await database.query('insert into public.members (kakao_id) values ($1) on conflict (kakao_id) do update set kakao_id=excluded.kakao_id returning id', [String(user.id)]);
     const session = randomToken();
-    await db().query("insert into public.sessions (token_hash, member_id, expires_at) values ($1,$2,now() + interval '7 days')", [hash(session), member.rows[0].id]);
+    stage = 'database_session';
+    await database.query("insert into public.sessions (token_hash, member_id, expires_at) values ($1,$2,now() + interval '7 days')", [hash(session), member.rows[0].id]);
     const target = jar.get('oauth_next')?.value === 'write' ? '/write' : '/home';
     const response = NextResponse.redirect(new URL(target, publicOrigin));
     response.cookies.set('christmas_session', session, { ...cookieOptions, maxAge: 604800 });
     response.cookies.delete('oauth_state'); response.cookies.delete('oauth_next');
+    console.info('[kakao-login] success:', { durationMs: Date.now() - startedAt });
     return response;
   } catch (error) {
-    console.error('[kakao-login] server error code:', typeof error?.code === 'string' ? error.code : 'unknown');
+    const safeCode = (value) => typeof value === 'string' && /^[A-Z0-9_]{1,32}$/.test(value) ? value : 'unknown';
+    console.error('[kakao-login] server error:', {
+      stage,
+      code: safeCode(error?.code),
+      causeCode: safeCode(error?.cause?.code),
+      durationMs: Date.now() - startedAt,
+    });
     return fail(stage);
   }
 }
