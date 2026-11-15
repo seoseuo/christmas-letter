@@ -1,6 +1,19 @@
 'use client';
 
-export default function LoginScreen({ go, loginTarget, back, Button }) {
+import { useState } from 'react';
+
+export default function LoginScreen({ go, loginTarget, Button, testLoginEnabled }) {
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  async function testLogin() {
+    setBusy(true); setError('');
+    try {
+      const response = await fetch('/api/auth/test', { method: 'POST' });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+      window.location.assign(loginTarget === 'write' ? '/write' : '/home');
+    } catch (e) { setError(e.message || '테스트 로그인에 실패했어요.'); setBusy(false); }
+  }
   return (
     <div className="content centered login">
       <div className="illustration">☃️ <span>♡</span> 🐈</div>
@@ -11,6 +24,8 @@ export default function LoginScreen({ go, loginTarget, back, Button }) {
       <Button onClick={() => window.location.assign('/api/auth/kakao?next=' + (loginTarget === 'write' ? 'write' : 'home'))}>
         ●　카카오로 시작하기
       </Button>
+      {testLoginEnabled && <Button secondary disabled={busy} onClick={testLogin}>테스트 로그인 (로컬 전용)</Button>}
+      {error && <div className="warning" role="alert">{error}</div>}
       <button className="text-link" onClick={() => go('guide')}>서비스 이용 안내</button>
     </div>
   );

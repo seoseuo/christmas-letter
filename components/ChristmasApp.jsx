@@ -6,7 +6,7 @@ import Sock from './stocking/Sock';
 import { colors, papers, price } from '../lib/service-config';
 import { screenPaths } from '../lib/routes';
 
-export default function ChristmasApp({ initialPage = 'intro', Screen }){
+export default function ChristmasApp({ initialPage = 'intro', Screen, testLoginEnabled = false }){
  const [origin,setOrigin]=useState('');
  const [page,setPage]=useState(initialPage); const [name,setName]=useState(''); const [saved,setSaved]=useState(false); const [opts,setOpts]=useState([0,0,0,0]); const [paper,setPaper]=useState(0); const [writer,setWriter]=useState(''); const [message,setMessage]=useState(''); const [product,setProduct]=useState('all'); const [reason,setReason]=useState(''); const [modal,setModal]=useState(''); const [toast,setToast]=useState('');
  const [loginTarget,setLoginTarget]=useState(''); const [stockingId,setStockingId]=useState(''); const [letterCount,setLetterCount]=useState(0); const [busy,setBusy]=useState(false);
@@ -39,7 +39,7 @@ export default function ChristmasApp({ initialPage = 'intro', Screen }){
  const Button=({children,onClick,secondary=false,disabled=false})=><button className={'button '+(secondary?'secondary':'')} onClick={onClick} disabled={disabled}>{children}</button>;
  const share=()=>navigator.share?navigator.share({title:'크리스마스 양말에 편지를 담아요',text:`${title}의 양말에 편지를 남겨주세요!`,url:location.origin+'/stockings/'+stockingId}).catch(()=>{}):copy();
  return <div className="desktop"><div className="desktop-copy"><span>✦ ANDFLOW STUDIO ✦</span><h1>마음을 담아,<br/>크리스마스에 만나요.</h1><p>소중한 사람들과 주고받는<br/>작고 따뜻한 크리스마스 선물</p><div className="desktop-stars">✳　✦　❄</div></div><div className="phone"><header><button className="brand" onClick={()=>go(saved?'home':'intro')}>🧦 <span>크리스마스 양말에 편지를 담아요</span></button><button className="guide-btn" onClick={()=>go('guide')}>이용 안내</button></header><main key={page}>
- <Screen {...{ art, go, price, loginTarget, back, name, setName, opts, setOpts, colors, setModal, title, origin, stockingId, copy, flash, share, letterCount, saved, writer, setWriter, papers, paper, setPaper, message, setMessage, busy, setBusy, product, reason, setReason, Sock, Button }} />
+ <Screen {...{ art, go, price, loginTarget, back, name, setName, opts, setOpts, colors, setModal, title, origin, stockingId, copy, flash, share, letterCount, saved, writer, setWriter, papers, paper, setPaper, message, setMessage, busy, setBusy, product, reason, setReason, Sock, Button, testLoginEnabled }} />
 
 
 
