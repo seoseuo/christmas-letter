@@ -34,16 +34,6 @@ export default function ChristmasApp({ initialPage = 'intro', Screen, testLoginE
   try { sessionStorage.setItem('christmas-preview',JSON.stringify({name,saved,opts,paper,writer,message,product,loginTarget,stockingId,...overrides})); } catch {}
   window.location.assign(p === 'visit' && stockingId ? '/stockings/' + encodeURIComponent(stockingId) : (screenPaths[p] || '/'));
  };
- const openMyStocking=async()=>{
-  try {
-   const response=await fetch('/api/stockings',{cache:'no-store'});
-   if(response.status===401){go('login',{loginTarget:''});return}
-   if(!response.ok)throw new Error();
-   const data=await response.json();
-   if(data.stocking){go('home',{saved:true,stockingId:data.stocking.id});return}
-   go('decorate',{saved:false,stockingId:''});
-  }catch{flash('내 양말 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.')}
- };
  const back=()=>{if(window.history.length>1)window.history.back();else go(initialPage==='visit'?'intro':'home')};
  const flash=(t)=>{setToast(t);setTimeout(()=>setToast(''),2600)}; const copy=async()=>{try{await navigator.clipboard.writeText(location.origin+'/stockings/'+stockingId);flash('공유 링크를 복사했어요!')}catch{flash('주소창의 링크를 복사해 주세요.')}}; const title=name||'소중한 친구'; const art=<Sock color={opts[0]} cord={opts[1]} ribbon={opts[2]} bell={opts[3]}/>;
  const Button=({children,onClick,secondary=false,disabled=false})=><button className={'button '+(secondary?'secondary':'')} onClick={onClick} disabled={disabled}>{children}</button>;
@@ -64,5 +54,5 @@ export default function ChristmasApp({ initialPage = 'intro', Screen, testLoginE
 
 
 
- </main><nav className="bottom-menu" aria-label="내 양말 메뉴"><button type="button" className={initialPage==='home'?'bottom-menu-button active':'bottom-menu-button'} aria-current={initialPage==='home'?'page':undefined} onClick={openMyStocking}><span aria-hidden="true">🧦</span>내 양말</button></nav><footer>© andflow studio</footer></div>{modal&&<div className="overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div className="modal"><div className="big-icon">🧦</div><h2 id="modal-title">이 양말로 결정할까요?</h2><p>한 번 완성한 양말은<br/>다시 수정할 수 없어요.</p><Button onClick={async()=>{setBusy(true);try{const r=await fetch('/api/stockings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nickname:name,options:opts})});const data=await r.json();if(!r.ok)throw new Error(data.error);setModal('');go('complete',{saved:true,stockingId:data.stocking.id})}catch(e){flash(e.message||'저장하지 못했어요.')}finally{setBusy(false)}}} disabled={busy}>네, 완성할게요!</Button><Button secondary onClick={()=>setModal('')}>조금 더 꾸밀래요</Button></div></div>}{toast&&<div className="toast" role="status">{toast}</div>}</div>
+ </main><footer>© andflow studio</footer></div>{modal&&<div className="overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div className="modal"><div className="big-icon">🧦</div><h2 id="modal-title">이 양말로 결정할까요?</h2><p>한 번 완성한 양말은<br/>다시 수정할 수 없어요.</p><Button onClick={async()=>{setBusy(true);try{const r=await fetch('/api/stockings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nickname:name,options:opts})});const data=await r.json();if(!r.ok)throw new Error(data.error);setModal('');go('complete',{saved:true,stockingId:data.stocking.id})}catch(e){flash(e.message||'저장하지 못했어요.')}finally{setBusy(false)}}} disabled={busy}>네, 완성할게요!</Button><Button secondary onClick={()=>setModal('')}>조금 더 꾸밀래요</Button></div></div>}{toast&&<div className="toast" role="status">{toast}</div>}</div>
 }
