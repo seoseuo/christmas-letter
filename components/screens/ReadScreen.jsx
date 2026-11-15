@@ -7,6 +7,7 @@ export default function ReadScreen({ go, Button }) {
   const [letter, setLetter] = useState(null);
   const [letters, setLetters] = useState([]);
   const [message, setMessage] = useState('편지를 불러오고 있어요.');
+  const [showSupport, setShowSupport] = useState(false);
 
   useEffect(() => {
     const id = new URLSearchParams(window.location.search).get('id');
@@ -25,6 +26,8 @@ export default function ReadScreen({ go, Button }) {
       fetch('/api/letters', { signal: controller.signal, cache: 'no-store' }).then(readJson),
     ]).then(([detail, list]) => {
       setLetter(detail.letter);
+      // 테스트 기간에는 읽기 화면을 열 때마다 안내합니다.
+      setShowSupport(true);
       setLetters(list.letters.filter((item) => item.unlocked));
     }).catch((error) => {
       if (error.name !== 'AbortError') setMessage(error.message || '편지를 불러오지 못했어요.');
@@ -53,6 +56,14 @@ export default function ReadScreen({ go, Button }) {
         </div>}
       </> : <div className="info" role="status">{message}</div>}
       <Button secondary onClick={() => go('letters')}>목록으로</Button>
+      {showSupport && <div className="overlay" role="presentation">
+        <div className="modal" role="dialog" aria-modal="true" aria-labelledby="support-title" aria-describedby="support-description" onKeyDown={(event) => { if (event.key === 'Escape') setShowSupport(false); }}>
+          <div className="big-icon" aria-hidden="true">🎁</div>
+          <h2 id="support-title">따뜻한 마음을 전해주셔서 감사해요</h2>
+          <p id="support-description">이 서비스를 만든 개발자에게 작은 후원으로 응원을 보내주시면 큰 힘이 돼요. 후원은 자유롭게 선택할 수 있어요.</p>
+          <button className="button" autoFocus onClick={() => setShowSupport(false)}>편지 읽기</button>
+        </div>
+      </div>}
       {letter && <div className="letter-report-row">
         <button className="letter-report" onClick={() => window.location.assign('/report?id=' + encodeURIComponent(letter.id))}>편지 신고하기</button>
       </div>}
