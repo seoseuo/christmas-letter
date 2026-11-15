@@ -8,6 +8,17 @@ export default function ReadScreen({ go, Button }) {
   const [letters, setLetters] = useState([]);
   const [message, setMessage] = useState('편지를 불러오고 있어요.');
   const [showSupport, setShowSupport] = useState(false);
+  const [copyStatus, setCopyStatus] = useState('');
+  const supportAccount = process.env.NEXT_PUBLIC_SUPPORT_ACCOUNT || '';
+
+  async function copyAccount() {
+    try {
+      await navigator.clipboard.writeText(supportAccount);
+      setCopyStatus('계좌번호를 복사했어요!');
+    } catch {
+      setCopyStatus('복사하지 못했어요. 계좌번호를 직접 선택해 복사해 주세요.');
+    }
+  }
 
   useEffect(() => {
     const id = new URLSearchParams(window.location.search).get('id');
@@ -57,10 +68,23 @@ export default function ReadScreen({ go, Button }) {
       </> : <div className="info" role="status">{message}</div>}
       <Button secondary onClick={() => go('letters')}>목록으로</Button>
       {showSupport && <div className="overlay" role="presentation">
-        <div className="modal" role="dialog" aria-modal="true" aria-labelledby="support-title" aria-describedby="support-description" onKeyDown={(event) => { if (event.key === 'Escape') setShowSupport(false); }}>
-          <div className="big-icon" aria-hidden="true">🎁</div>
-          <h2 id="support-title">따뜻한 마음을 전해주셔서 감사해요</h2>
-          <p id="support-description">이 서비스를 만든 개발자에게 작은 후원으로 응원을 보내주시면 큰 힘이 돼요. 후원은 자유롭게 선택할 수 있어요.</p>
+        <div className="modal support-modal" role="dialog" aria-modal="true" aria-labelledby="support-title" aria-describedby="support-description" onKeyDown={(event) => { if (event.key === 'Escape') setShowSupport(false); }}>
+          <div className="support-badge">A LITTLE CHRISTMAS SUPPORT ✨</div>
+          <h2 id="support-title">🎄 메리 크리스마스!</h2>
+          <div id="support-description" className="support-message">
+            <p>산타는 선물을 나눠주고,<br/>개발자는 밤을 새웠습니다. 🥹</p>
+            <p>여러분의 크리스마스를 위해<br/>열심히 양말을 만든 개발자에게<br/>작은 동전 하나만 적선해 주세요.</p>
+            <p>보내주신 후원은 개발자의 커피와<br/>서버의 생명 연장에 사용됩니다. ☕️</p>
+          </div>
+          <div className="support-method support-woori">
+            <div className="support-method-heading"><span>우리은행</span><small>계좌번호를 누르면 복사돼요</small></div>
+            {supportAccount ? <button className="support-account" onClick={copyAccount}><span>{supportAccount}</span><span aria-hidden="true">⧉</span></button> : <p className="support-unavailable">계좌 후원 안내를 준비하고 있어요.</p>}
+            <div className="support-copy-status" role="status">{copyStatus}</div>
+          </div>
+          <div className="support-method support-toss">
+            <div className="support-method-heading"><span>토스</span><small>QR 코드로 후원하기</small></div>
+            <img className="support-qr" src="/images/support-toss.png" alt="토스 후원 QR 코드" />
+          </div>
           <button className="button" autoFocus onClick={() => setShowSupport(false)}>편지 읽기</button>
         </div>
       </div>}
