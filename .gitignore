@@ -19,3 +19,8 @@ out/
 기획/
 db
 supabase-ca.crt
+
+migrations
+
+# 개인 작업 메모
+/todo.md
